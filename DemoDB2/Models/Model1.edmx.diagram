@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="39cf3381310e4945a90394a4bd5f7e60" Name="Diagram1">
+        <EntityTypeShape EntityType="QLKSModel.ChucVu" Width="1.5" PointX="1.5" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.DatPhong" Width="1.5" PointX="3" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.DichVuSuDung" Width="1.5" PointX="6" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.HoaDon" Width="1.5" PointX="3" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.LichLamViec" Width="1.5" PointX="7.375" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.LoaiPhong" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.Luong" Width="1.5" PointX="6" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.MonAn" Width="1.5" PointX="3.75" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.NguoiDung" Width="1.5" PointX="0.75" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.NhanVien" Width="1.5" PointX="3.75" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.Phong" Width="1.5" PointX="0.75" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.Spa" Width="1.5" PointX="3.75" PointY="17.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLKSModel.Xe" Width="1.5" PointX="3.75" PointY="20.25" IsExpanded="true" />
+        <AssociationConnector Association="QLKSModel.FK__NhanVien__ChucVu__33D4B598" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__DatPhong__IDDich__4222D4EF" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__DatPhong__NguoiD__4316F928" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__DatPhong__PhongI__440B1D61" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__DichVuSuD__HoaDo__3E52440B" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__DichVuSuD__MonAn__3C69FB99" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__DichVuSuD__Nguoi__3F466844" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__DichVuSuD__NhanV__3A81B327" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__DichVuSuD__SpaID__3D5E1FD2" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__DichVuSuDu__XeID__3B75D760" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__HoaDon__NguoiDun__36B12243" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__HoaDon__PhongID__37A5467C" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__LichLamVi__NhanV__60A75C0F" ManuallyRouted="false" />
+        <AssociationConnector Association="QLKSModel.FK__Luong__NhanVienI__46E78A0C" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
