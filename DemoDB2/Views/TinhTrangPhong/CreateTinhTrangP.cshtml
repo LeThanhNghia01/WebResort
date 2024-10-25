@@ -1,0 +1,35 @@
+﻿@model DemoDB2.Models.TinhTrangPhong
+@{
+    ViewBag.Title = "Tạo Tình Trạng Phòng";
+    Layout = "~/Views/Shared/_LayoutNV.cshtml";
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>TinhTrangPhong</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.TenTinhTrang, "Tình Trạng Phòng", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.TenTinhTrang, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.TenTinhTrang, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+        <br /><br />
+
+        <div class="col-md-offset-2 col-md-10">
+            <a href="@Url.Action("ViewListTinhTrangP")" class="btn btn-primary">Danh dách tình trạng phòng</a>
+        </div>
+    </div>
+    </div>
+ }

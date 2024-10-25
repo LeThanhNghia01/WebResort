@@ -46,49 +46,49 @@ namespace DemoDB2.Controllers
                 NgayDatPhong = DateTime.Now
             };
             ViewBag.TenNguoiDung = currentUser.TenNguoiDung;
-            ViewBag.TenPhong = phong.LoaiP;
+            ViewBag.TenPhong = phong.LoaiPhong;
             return View(datPhong);
         }
 
         // POST: DatPhong/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "PhongID,NgayNhanPhong,NgayTraPhong,NguoiDungID")] DatPhong datPhong)
-        {
-            if (ModelState.IsValid)
-            {
-                using (var transaction = db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        datPhong.NgayDatPhong = DateTime.Now;
-                        db.DatPhong.Add(datPhong);
+        //public ActionResult Create([Bind(Include = "PhongID,NgayNhanPhong,NgayTraPhong,NguoiDungID")] DatPhong datPhong)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        using (var transaction = db.Database.BeginTransaction())
+        //        {
+        //            try
+        //            {
+        //                datPhong.NgayDatPhong = DateTime.Now;
+        //                db.DatPhong.Add(datPhong);
 
-                        // Cập nhật TinhTrang của Phòng
-                        var phongToUpdate = db.Phong.Find(datPhong.PhongID);
-                        if (phongToUpdate != null)
-                        {
-                            phongToUpdate.TinhTrang = false; // false đại diện cho "Đã đặt"
-                        }
+        //                // Cập nhật TinhTrang của Phòng
+        //                var phongToUpdate = db.Phong.Find(datPhong.PhongID);
+        //                if (phongToUpdate != null)
+        //                {
+        //                    phongToUpdate.TinhTrang = false; // false đại diện cho "Đã đặt"
+        //                }
 
-                        db.SaveChanges();
-                        transaction.Commit();
-                        return RedirectToAction("Index", "Home");
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        ModelState.AddModelError("", "Có lỗi xảy ra trong quá trình đặt phòng.");
-                    }
-                }
-            }
+        //                db.SaveChanges();
+        //                transaction.Commit();
+        //                return RedirectToAction("Index", "Home");
+        //            }
+        //            catch (Exception)
+        //            {
+        //                transaction.Rollback();
+        //                ModelState.AddModelError("", "Có lỗi xảy ra trong quá trình đặt phòng.");
+        //            }
+        //        }
+        //    }
 
-            var currentUser = db.NguoiDung.Find(datPhong.NguoiDungID);
-            var phong = db.Phong.Find(datPhong.PhongID);
-            ViewBag.TenNguoiDung = currentUser?.TenNguoiDung;
-            ViewBag.TenPhong = phong?.LoaiP;
-            return View(datPhong);
-        }
+        //    var currentUser = db.NguoiDung.Find(datPhong.NguoiDungID);
+        //    var phong = db.Phong.Find(datPhong.PhongID);
+        //    ViewBag.TenNguoiDung = currentUser?.TenNguoiDung;
+        //    ViewBag.TenPhong = phong?.LoaiPhong;
+        //    return View(datPhong);
+        //}
 
         protected override void Dispose(bool disposing)
         {

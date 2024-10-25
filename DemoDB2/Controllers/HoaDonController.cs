@@ -82,7 +82,7 @@ namespace DemoDB2.Controllers
             var phong = db.Phong.Find(hoaDon.PhongID);
 
             ViewBag.TenKhachHang = khachHang?.TenNguoiDung;
-            ViewBag.LoaiPhong = phong?.LoaiP;
+            ViewBag.LoaiPhong = phong?.LoaiPhong;
             ViewBag.GiaPhong = phong?.Gia;
 
             // Tính số ngày ở
@@ -113,7 +113,7 @@ namespace DemoDB2.Controllers
             var phong = db.Phong.Find(hoaDon.PhongID);
 
             ViewBag.TenKhachHang = khachHang?.TenNguoiDung;
-            ViewBag.LoaiPhong = phong?.LoaiP;
+            ViewBag.LoaiPhong = phong?.LoaiPhong;
             ViewBag.GiaPhong = phong?.Gia;
 
             // Tính số ngày ở
@@ -208,7 +208,7 @@ namespace DemoDB2.Controllers
             var phong = db.Phong.Find(hoaDon.PhongID);
 
             ViewBag.TenKhachHang = khachHang?.TenNguoiDung;
-            ViewBag.LoaiPhong = phong?.LoaiP;
+            ViewBag.LoaiPhong = phong?.LoaiPhong;
             ViewBag.GiaPhong = phong?.Gia;
 
             // Tính số ngày ở
@@ -242,43 +242,43 @@ namespace DemoDB2.Controllers
             }
             base.Dispose(disposing);
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ConfirmPayment(int id)
-        {
-            var hoaDon = db.HoaDon.Find(id);
-            if (hoaDon == null)
-            {
-                return HttpNotFound();
-            }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult ConfirmPayment(int id)
+        //{
+        //    var hoaDon = db.HoaDon.Find(id);
+        //    if (hoaDon == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
 
-            using (var transaction = db.Database.BeginTransaction())
-            {
-                try
-                {
-                    hoaDon.TrangThaiThanhToan = "Đã thanh toán";
+        //    using (var transaction = db.Database.BeginTransaction())
+        //    {
+        //        try
+        //        {
+        //            hoaDon.TrangThaiThanhToan = "Đã thanh toán";
 
-                    // Cập nhật TinhTrang của Phòng
-                    var phong = db.Phong.Find(hoaDon.PhongID);
-                    if (phong != null)
-                    {
-                        phong.TinhTrang = true; // true đại diện cho "Trống"
-                    }
+        //            // Cập nhật TinhTrang của Phòng
+        //            var phong = db.Phong.Find(hoaDon.PhongID);
+        //            if (phong != null)
+        //            {
+        //                phong.TinhTrangPhong = true; // true đại diện cho "Trống"
+        //            }
 
-                    db.SaveChanges();
-                    transaction.Commit();
+        //            db.SaveChanges();
+        //            transaction.Commit();
 
-                    TempData["SuccessMessage"] = "Thanh toán thành công!";
-                    return RedirectToAction("IndexKH");
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình thanh toán.";
-                    return RedirectToAction("IndexKH");
-                }
-            }
-        }
+        //            TempData["SuccessMessage"] = "Thanh toán thành công!";
+        //            return RedirectToAction("IndexKH");
+        //        }
+        //        catch (Exception)
+        //        {
+        //            transaction.Rollback();
+        //            TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình thanh toán.";
+        //            return RedirectToAction("IndexKH");
+        //        }
+        //    }
+        //}
 
         public ActionResult Payment(int id)
         {
@@ -302,7 +302,7 @@ namespace DemoDB2.Controllers
             var phong = db.Phong.Find(hoaDon.PhongID);
 
             ViewBag.TenKhachHang = khachHang?.TenNguoiDung;
-            ViewBag.LoaiPhong = phong?.LoaiP;
+            ViewBag.LoaiPhong = phong?.LoaiPhong;
             ViewBag.GiaPhong = phong?.Gia;
 
             // Tính số ngày ở

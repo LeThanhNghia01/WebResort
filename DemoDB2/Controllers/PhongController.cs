@@ -5,7 +5,7 @@ using System.Net;
 using System.Web.Mvc;
 using DemoDB2.Models;
 using PagedList;
-
+using System.Data.Entity; 
 
 namespace DemoDB2.Controllers
 {
@@ -19,10 +19,16 @@ namespace DemoDB2.Controllers
             se_cate.ListLoai = database.LoaiPhong.ToList<LoaiPhong>();
             return PartialView("SelectLoai", se_cate);
         }
-
+         public ActionResult SelectTinhTrangPhong()
+        {
+            TinhTrangPhong se_cate = new TinhTrangPhong();
+            se_cate.ListTinhTrang = database.TinhTrangPhong.ToList<TinhTrangPhong>();
+            return PartialView("SelectTinhTrangPhong", se_cate);
+        }
         public ActionResult CreatePhong()
         {
-            ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "TenLoai", "TenLoai");
+            ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "IDLoai", "TenLoai");
+            ViewBag.TinhTrangPhongList = new SelectList(database.TinhTrangPhong, "IDTinhTrang", "TenTinhTrang");
             return View();
         }
 
@@ -49,32 +55,77 @@ namespace DemoDB2.Controllers
                     database.SaveChanges();
                     return RedirectToAction("ViewPhong");
                 }
-
-                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "TenLoai", "TenLoai");
+                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "IDLoai", "TenLoai");
+                ViewBag.TinhTrangPhongList = new SelectList(database.TinhTrangPhong, "IDTinhTrang", "TenTinhTrang");
                 return View(pro);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Error: " + ex.Message);
-                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "TenLoai", "TenLoai");
+                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "IDLoai", "TenLoai");
+                ViewBag.TinhTrangPhongList = new SelectList(database.TinhTrangPhong, "IDTinhTrang", "TenTinhTrang");
                 return View(pro);
             }
         }
 
-        public ActionResult ViewPhong(int? page)
+        public ActionResult ViewPhong(int? page, int? TinhTrangID)
         {
             int pageSize = 5;
             int pageNumber = (page ?? 1);
-            var phongs = database.Phong.OrderBy(p => p.PhongID).ToList();
-            var pagedPhongs = phongs.ToPagedList(pageNumber, pageSize);
+
+            var phongs = database.Phong
+                .Include(p => p.LoaiPhong)
+                .Include(p => p.TinhTrangPhong);
+
+            if (TinhTrangID.HasValue)
+            {
+                phongs = phongs.Where(p => p.IDTinhTrang == TinhTrangID.Value);
+            }
+
+            var pagedPhongs = phongs
+                .OrderBy(p => p.PhongID)
+                .ToPagedList(pageNumber, pageSize);
+
+            ViewBag.TinhTrangList = new SelectList(database.TinhTrangPhong, "IDTinhTrang", "TenTinhTrang");
+
             return View(pagedPhongs);
         }
-        public ActionResult ViewPhongKH(int? page)
+        public ActionResult ViewPhongTieuChuan(int? page)
         {
-            int pageSize = 12;
+            return ViewPhongKH(page, 1); // Giả sử ID 1 là cho Phòng Tiêu Chuẩn
+        }
+
+        public ActionResult ViewPhongVIP(int? page)
+        {
+            return ViewPhongKH(page, 2); // Giả sử ID 2 là cho Phòng VIP
+        }
+        public ActionResult ViewPhongKH(int? page, int? LoaiPhongID)
+        {
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
-            var model = database.Phong.OrderBy(p => p.PhongID).ToPagedList(pageNumber, pageSize);
-            return View(model);
+
+            var trangThaiTrong = database.TinhTrangPhong.FirstOrDefault(t => t.TenTinhTrang == "Trống");
+            if (trangThaiTrong == null)
+            {
+                return Content("Không tìm thấy trạng thái 'Trống' trong cơ sở dữ liệu.");
+            }
+
+            var phongs = database.Phong
+                .Include(p => p.LoaiPhong)
+                .Include(p => p.TinhTrangPhong)
+                .Where(p => p.IDTinhTrang == trangThaiTrong.IDTinhTrang);
+
+            if (LoaiPhongID.HasValue)
+            {
+                phongs = phongs.Where(p => p.IDLoai == LoaiPhongID.Value);
+            }
+
+            var pagedPhongs = phongs.OrderBy(p => p.PhongID).ToPagedList(pageNumber, pageSize);
+
+            ViewBag.LoaiPhongID = LoaiPhongID;
+            ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "IDLoai", "TenLoai");
+
+            return View(pagedPhongs);
         }
         public ActionResult EditPhong(int id)
         {
@@ -89,7 +140,8 @@ namespace DemoDB2.Controllers
             }
 
 
-            ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "TenLoai", "TenLoai", phong.LoaiP);
+            ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "IDLoai", "TenLoai", phong.IDLoai);
+            ViewBag.TinhTrangPhongList = new SelectList(database.TinhTrangPhong, "IDTinhTrang", "TenTinhTrang", phong.IDTinhTrang);
 
             return View(phong);
         }
@@ -124,8 +176,8 @@ namespace DemoDB2.Controllers
                     }
 
                     // Cập nhật các trường khác
-                    existingPhong.LoaiP = phong.LoaiP;
-                    existingPhong.TinhTrang = phong.TinhTrang;
+                    existingPhong.IDLoai = phong.IDLoai;
+                    existingPhong.IDTinhTrang = phong.IDTinhTrang;
                     existingPhong.Gia = phong.Gia;
                     existingPhong.ImagePhong = phong.ImagePhong;
 
@@ -134,13 +186,14 @@ namespace DemoDB2.Controllers
                     return RedirectToAction("ViewPhong");
                 }
 
-                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "TenLoai", "TenLoai", phong.LoaiP);
+                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "IDLoai", "TenLoai", phong.IDLoai);         
+                ViewBag.TinhTrangPhongList = new SelectList(database.TinhTrangPhong, "IDTinhTrang", "TenTinhTrang", phong.IDTinhTrang);
                 return View(phong);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Error: " + ex.Message);
-                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "TenLoai", "TenLoai", phong.LoaiP);
+                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "TenLoai", "TenLoai", phong.LoaiPhong);
                 return View(phong);
             }
         }
@@ -174,7 +227,7 @@ namespace DemoDB2.Controllers
                 var phong = database.Phong.Find(datPhong.PhongID);
                 if (phong != null)
                 {
-                    phong.TinhTrang = false; // Đặt thành đã đặt
+                  
 
                     // Tạo hóa đơn mới
                     var hoaDon = new HoaDon
@@ -192,7 +245,7 @@ namespace DemoDB2.Controllers
                 database.SaveChanges();
 
                 TempData["SuccessMessage"] = "Đặt phòng thành công. Hóa đơn đã được tạo.";
-                return RedirectToAction("ViewPhongKH");
+                return RedirectToAction("TrangChu");
             }
 
             return View(datPhong);
