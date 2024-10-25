@@ -67,7 +67,50 @@ namespace DemoDB2.Controllers
                 return View(pro);
             }
         }
+        [HttpPost]
+        public ActionResult ConfirmRoom(int id)
+        {
+            try
+            {
+                var phong = database.Phong.Find(id);
+                if (phong == null)
+                {
+                    return HttpNotFound();
+                }
 
+                // Đảm bảo trạng thái hiện tại là Chờ Xác Nhận (ID = 5)
+                if (phong.IDTinhTrang != 5)
+                {
+                    TempData["Error"] = "Chỉ có thể xác nhận phòng đang ở trạng thái Chờ Xác Nhận";
+                    return RedirectToAction("ViewPhong");
+                }
+
+                // Cập nhật trạng thái
+                phong.IDTinhTrang = 6;
+                database.Entry(phong).State = EntityState.Modified;
+                database.SaveChanges();
+
+                // Thông báo thành công
+                TempData["Success"] = "Đã xác nhận phòng thành công";
+
+                // Refresh lại trang với các tham số hiện tại
+                if (Request.QueryString["page"] != null)
+                {
+                    return RedirectToAction("ViewPhong", new
+                    {
+                        page = Request.QueryString["page"],
+                        TinhTrangID = Request.QueryString["TinhTrangID"]
+                    });
+                }
+                return RedirectToAction("ViewPhong");
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi và thông báo
+                TempData["Error"] = "Có lỗi xảy ra: " + ex.Message;
+                return RedirectToAction("ViewPhong");
+            }
+        }
         public ActionResult ViewPhong(int? page, int? TinhTrangID)
         {
             int pageSize = 5;

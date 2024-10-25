@@ -53,6 +53,10 @@
         <a href="@Url.Action("IndexKH", "HoaDon")" class="btn btn-info">
             <i class="fas fa-file-invoice"></i> Hóa đơn
         </a>
+        <a href="@Url.Action("PhieuDatPhong","LoginUser")" class="btn btn-booking">
+            <i class="fas fa-calendar-check"></i> Phiếu đặt phòng
+        </a>
+
         <a href="@Url.Action("LogOutUser","LoginUser")" class="btn btn-danger">
             <i class="fas fa-sign-out-alt"></i> Đăng xuất
         </a>
@@ -134,7 +138,7 @@
         font-weight: bold;
         transition: background-color 0.3s;
     }
-
+   
     .btn-primary {
         background-color: #007bff;
         color: #fff;
@@ -144,7 +148,14 @@
         background-color: #dc3545;
         color: #fff;
     }
-
+    .btn-booking {
+        background-color: #17a2b8;
+        color: #fff;
+        max-width: 200px; 
+        overflow: hidden; 
+        white-space: nowrap; 
+        text-overflow: ellipsis; 
+    }
     .btn-secondary {
         background-color: #6c757d;
         color: #fff;

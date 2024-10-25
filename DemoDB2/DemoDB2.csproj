@@ -442,6 +442,9 @@
     <Content Include="Views\Phong\SelectTinhTrangPhong.cshtml" />
     <Content Include="Views\Phong\ViewPhongVip.cshtml" />
     <Content Include="Views\Phong\ViewPhongTieuChuan.cshtml" />
+    <Content Include="Views\TinhTrangPhong\DeleteTinhTrangPhong.cshtml" />
+    <Content Include="Views\TinhTrangPhong\EditTinhTrangPhong.cshtml" />
+    <Content Include="Views\LoginUser\PhieuDatPhong.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
