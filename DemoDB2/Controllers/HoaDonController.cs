@@ -10,6 +10,7 @@ using DemoDB2.Models;
 
 namespace DemoDB2.Controllers
 {
+    [CheckUserLogin]
     public class HoaDonController : Controller
     {
         private QLKSEntities db = new QLKSEntities();
@@ -20,47 +21,71 @@ namespace DemoDB2.Controllers
             var hoaDon = db.HoaDon
                 .Include(h => h.NguoiDung)
                 .Include(h => h.Phong)
-                .AsNoTracking() // Đảm bảo lấy dữ liệu mới nhất
+                .Include(h => h.Phong.LoaiPhong) // Thêm Include LoaiPhong
+                .AsNoTracking()
                 .ToList();
 
             foreach (var hd in hoaDon)
             {
-                // Load các thông tin liên quan
-                var phong = db.Phong.Find(hd.PhongID);
+                if (hd.PhongID.HasValue)
+                {
+                    var phong = db.Phong
+                        .Include(p => p.LoaiPhong)
+                        .FirstOrDefault(p => p.PhongID == hd.PhongID);
 
-                // Tính số ngày ở
-                int soNgayO = (hd.NgayTraPhong.Value - hd.NgayNhanPhong.Value).Days;
-
-                // Tính tổng tiền
-                decimal tongTien = (decimal)(phong.Gia * soNgayO);
-
-                hd.TongTien = tongTien;
+                    if (phong != null && hd.NgayTraPhong.HasValue && hd.NgayNhanPhong.HasValue)
+                    {
+                        int soNgayO = (hd.NgayTraPhong.Value - hd.NgayNhanPhong.Value).Days;
+                        hd.TongTien = phong.Gia * soNgayO;
+                    }
+                }
             }
 
             return View(hoaDon);
         }
 
         // GET: HoaDon/Details/5
+
         public ActionResult IndexKH()
         {
+            // Lấy NguoiDungID từ Session
+            var nguoiDungID = Session["NguoiDungID"];
+
+            if (nguoiDungID == null)
+            {
+                // Nếu chưa đăng nhập, chuyển hướng về trang đăng nhập
+                return RedirectToAction("Login", "LoginUser");
+            }
+
+            // Convert nguoiDungID sang int
+            int userID = Convert.ToInt32(nguoiDungID);
+
+            // Lọc hóa đơn theo NguoiDungID
             var hoaDon = db.HoaDon
                 .Include(h => h.NguoiDung)
                 .Include(h => h.Phong)
-                .AsNoTracking() // Đảm bảo lấy dữ liệu mới nhất
+                .Include(h => h.Phong.LoaiPhong)
+                .Where(h => h.NguoiDungID == userID) // Thêm điều kiện lọc
+                .AsNoTracking()
                 .ToList();
 
             foreach (var hd in hoaDon)
             {
-                // Load các thông tin liên quan
-                var phong = db.Phong.Find(hd.PhongID);
+                if (hd.PhongID.HasValue)
+                {
+                    var phong = db.Phong
+                        .Include(p => p.LoaiPhong)
+                        .FirstOrDefault(p => p.PhongID == hd.PhongID);
 
-                // Tính số ngày ở
-                int soNgayO = (hd.NgayTraPhong.Value - hd.NgayNhanPhong.Value).Days;
-
-                // Tính tổng tiền
-                decimal tongTien = (decimal)(phong.Gia * soNgayO);
-
-                hd.TongTien = tongTien;
+                    if (phong != null)
+                    {
+                        if (hd.NgayTraPhong.HasValue && hd.NgayNhanPhong.HasValue)
+                        {
+                            int soNgayO = (hd.NgayTraPhong.Value - hd.NgayNhanPhong.Value).Days;
+                            hd.TongTien = phong.Gia * soNgayO;
+                        }
+                    }
+                }
             }
 
             return View(hoaDon);
@@ -71,28 +96,52 @@ namespace DemoDB2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            HoaDon hoaDon = db.HoaDon.Find(id);
+
+            // Load HoaDon cùng với các related entities
+            HoaDon hoaDon = db.HoaDon
+                .Include(h => h.NguoiDung)
+                .Include(h => h.Phong)
+                .Include(h => h.Phong.LoaiPhong)
+                .FirstOrDefault(h => h.HoaDonID == id);
+
             if (hoaDon == null)
             {
                 return HttpNotFound();
             }
 
             // Load các thông tin liên quan
-            var khachHang = db.NguoiDung.Find(hoaDon.KhachHangID);
-            var phong = db.Phong.Find(hoaDon.PhongID);
+            ViewBag.TenKhachHang = hoaDon.NguoiDung?.TenNguoiDung;
 
-            ViewBag.TenKhachHang = khachHang?.TenNguoiDung;
-            ViewBag.LoaiPhong = phong?.LoaiPhong;
-            ViewBag.GiaPhong = phong?.Gia;
+            // Không cần phải load lại phòng vì đã Include ở trên
+            if (hoaDon.Phong != null)
+            {
+                ViewBag.GiaPhong = hoaDon.Phong.Gia;
+
+                // Đảm bảo LoaiPhong không null trước khi truy cập
+                if (hoaDon.Phong.LoaiPhong != null)
+                {
+                    ViewBag.LoaiPhong = $"{hoaDon.Phong.LoaiPhong.TenLoai} - {hoaDon.Phong.PhongID}";
+                }
+                else
+                {
+                    ViewBag.LoaiPhong = "N/A";
+                }
+            }
 
             // Tính số ngày ở
-            int soNgayO = (hoaDon.NgayTraPhong.Value - hoaDon.NgayNhanPhong.Value).Days;
+            if (hoaDon.NgayTraPhong.HasValue && hoaDon.NgayNhanPhong.HasValue)
+            {
+                int soNgayO = (hoaDon.NgayTraPhong.Value - hoaDon.NgayNhanPhong.Value).Days;
+                ViewBag.SoNgayO = soNgayO;
 
-            // Tính tổng tiền
-            decimal tongTien = (decimal)(ViewBag.GiaPhong * soNgayO);
-
-            ViewBag.SoNgayO = soNgayO;
-            ViewBag.TongTien = tongTien;
+                // Tính tổng tiền
+                if (hoaDon.Phong?.Gia != null)
+                {
+                    decimal tongTien = (decimal)(hoaDon.Phong.Gia * soNgayO);
+                    ViewBag.TongTien = tongTien;
+                    hoaDon.TongTien = tongTien; // Cập nhật tổng tiền vào model
+                }
+            }
 
             return View(hoaDon);
         }
@@ -102,32 +151,54 @@ namespace DemoDB2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            HoaDon hoaDon = db.HoaDon.Find(id);
+
+            // Load HoaDon cùng với các related entities
+            HoaDon hoaDon = db.HoaDon
+                .Include(h => h.NguoiDung)
+                .Include(h => h.Phong)
+                .Include(h => h.Phong.LoaiPhong)
+                .FirstOrDefault(h => h.HoaDonID == id);
+
             if (hoaDon == null)
             {
                 return HttpNotFound();
             }
 
             // Load các thông tin liên quan
-            var khachHang = db.NguoiDung.Find(hoaDon.KhachHangID);
-            var phong = db.Phong.Find(hoaDon.PhongID);
+            ViewBag.TenKhachHang = hoaDon.NguoiDung?.TenNguoiDung;
 
-            ViewBag.TenKhachHang = khachHang?.TenNguoiDung;
-            ViewBag.LoaiPhong = phong?.LoaiPhong;
-            ViewBag.GiaPhong = phong?.Gia;
+            // Không cần phải load lại phòng vì đã Include ở trên
+            if (hoaDon.Phong != null)
+            {
+                ViewBag.GiaPhong = hoaDon.Phong.Gia;
+
+                // Đảm bảo LoaiPhong không null trước khi truy cập
+                if (hoaDon.Phong.LoaiPhong != null)
+                {
+                    ViewBag.LoaiPhong = $"{hoaDon.Phong.LoaiPhong.TenLoai} - {hoaDon.Phong.PhongID}";
+                }
+                else
+                {
+                    ViewBag.LoaiPhong = "N/A";
+                }
+            }
 
             // Tính số ngày ở
-            int soNgayO = (hoaDon.NgayTraPhong.Value - hoaDon.NgayNhanPhong.Value).Days;
+            if (hoaDon.NgayTraPhong.HasValue && hoaDon.NgayNhanPhong.HasValue)
+            {
+                int soNgayO = (hoaDon.NgayTraPhong.Value - hoaDon.NgayNhanPhong.Value).Days;
+                ViewBag.SoNgayO = soNgayO;
 
-            // Tính tổng tiền
-            decimal tongTien = (decimal)(ViewBag.GiaPhong * soNgayO);
-
-            ViewBag.SoNgayO = soNgayO;
-            ViewBag.TongTien = tongTien;
+                // Tính tổng tiền
+                if (hoaDon.Phong?.Gia != null)
+                {
+                    decimal tongTien = (decimal)(hoaDon.Phong.Gia * soNgayO);
+                    ViewBag.TongTien = tongTien;
+                }
+            }
 
             return View(hoaDon);
         }
-
         // GET: HoaDon/Create
         public ActionResult Create()
         {
