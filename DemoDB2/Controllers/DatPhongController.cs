@@ -75,7 +75,7 @@ public class DatPhongController : Controller
                     var phongToUpdate = db.Phong.Find(datPhong.PhongID);
                     if (phongToUpdate != null)
                     {
-                        phongToUpdate.TinhTrang = false; // false đại diện cho "Đã đặt"
+                        phongToUpdate.TinhTrangPhong.IDTinhTrang = 4; // ID 4 đại diện cho "Đã đặt"
                     }
 
                     db.SaveChanges();
