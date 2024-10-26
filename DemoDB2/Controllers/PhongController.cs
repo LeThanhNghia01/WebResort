@@ -5,7 +5,7 @@ using System.Net;
 using System.Web.Mvc;
 using DemoDB2.Models;
 using PagedList;
-using System.Data.Entity; 
+using System.Data.Entity;
 
 namespace DemoDB2.Controllers
 {
@@ -19,7 +19,7 @@ namespace DemoDB2.Controllers
             se_cate.ListLoai = database.LoaiPhong.ToList<LoaiPhong>();
             return PartialView("SelectLoai", se_cate);
         }
-         public ActionResult SelectTinhTrangPhong()
+        public ActionResult SelectTinhTrangPhong()
         {
             TinhTrangPhong se_cate = new TinhTrangPhong();
             se_cate.ListTinhTrang = database.TinhTrangPhong.ToList<TinhTrangPhong>();
@@ -135,12 +135,12 @@ namespace DemoDB2.Controllers
         }
         public ActionResult ViewPhongTieuChuan(int? page)
         {
-            return ViewPhongKH(page, 2); // Giả sử ID 2 là cho Phòng Tiêu Chuẩn
+            return ViewPhongKH(page, 2); // Giả sử ID 1 là cho Phòng Tiêu Chuẩn
         }
 
         public ActionResult ViewPhongVIP(int? page)
         {
-            return ViewPhongKH(page, 1); // Giả sử ID 1 là cho Phòng VIP
+            return ViewPhongKH(page, 1); // Giả sử ID 2 là cho Phòng VIP
         }
         public ActionResult ViewPhongKH(int? page, int? LoaiPhongID)
         {
@@ -229,7 +229,7 @@ namespace DemoDB2.Controllers
                     return RedirectToAction("ViewPhong");
                 }
 
-                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "IDLoai", "TenLoai", phong.IDLoai);         
+                ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "IDLoai", "TenLoai", phong.IDLoai);
                 ViewBag.TinhTrangPhongList = new SelectList(database.TinhTrangPhong, "IDTinhTrang", "TenTinhTrang", phong.IDTinhTrang);
                 return View(phong);
             }
@@ -242,10 +242,6 @@ namespace DemoDB2.Controllers
         }
         public ActionResult DatPhong(int id)
         {
-            if (Session["NguoiDungID"] == null)
-            {
-                return RedirectToAction("Index", "LoginUser"); 
-            }
             Phong phong = database.Phong.Find(id);
             if (phong == null)
             {
@@ -274,7 +270,7 @@ namespace DemoDB2.Controllers
                 var phong = database.Phong.Find(datPhong.PhongID);
                 if (phong != null)
                 {
-                  
+
 
                     // Tạo hóa đơn mới
                     var hoaDon = new HoaDon
@@ -292,7 +288,7 @@ namespace DemoDB2.Controllers
                 database.SaveChanges();
 
                 TempData["SuccessMessage"] = "Đặt phòng thành công. Hóa đơn đã được tạo.";
-                return RedirectToAction("Home","TrangChu");
+                return RedirectToAction("TrangChu");
             }
 
             return View(datPhong);

@@ -4,7 +4,7 @@
 @model IPagedList<Phong>
 
 @{
-    ViewBag.Title = "Danh Sách Phòng";
+    ViewBag.Title = "Danh Sách Phòng Tiêu Chuẩn";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,9 +14,8 @@
 
 <div class="room-list-container">
     <div class="header">
-        <h2>Danh Sách Phòng</h2>
+        <h2>Danh Sách Phòng Tiêu Chuẩn</h2>
     </div>
-
 
     <div class="container mt-4">
         @if (TempData["SuccessMessage"] != null)
@@ -24,6 +23,12 @@
             <div class="alert alert-success">
                 @TempData["SuccessMessage"]
                 <a href="@Url.Action("IndexKH", "HoaDon")" class="btn btn-primary btn-sm float-right">Xem Hóa Đơn</a>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
             </div>
         }
     </div>
@@ -52,7 +57,21 @@
                     <div class="room-info">
                         <h3>Phòng @phong.PhongID</h3>
                         <p class="room-price">Giá: @phong.Gia</p>
-                        <a href="@Url.Action("DatPhong", new { id = phong.PhongID })" class="btn btn-book" data-id="@phong.PhongID" data-price="@phong.Gia">Đặt Phòng</a>
+                        @if (Session["ID"] != null)
+                        {
+                            <a href="@Url.Action("DatPhong", "Phong", new { id = phong.PhongID })"
+                               class="btn btn-book"
+                               data-id="@phong.PhongID"
+                               data-price="@phong.Gia">Đặt Phòng</a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index", "LoginUser")"
+                               class="btn btn-primary"
+                               onclick="return confirm('Bạn cần đăng nhập để đặt phòng. Chuyển đến trang đăng nhập?')">
+                                Đăng nhập để đặt phòng
+                            </a>
+                        }
                     </div>
                 </div>
             }
@@ -60,7 +79,7 @@
     }
 </div>
 
-@Html.PagedListPager(Model, page => Url.Action("ViewPhongKH", new { page, TinhTrangID = Request.QueryString["TinhTrangID"] }))
+@Html.PagedListPager(Model, page => Url.Action("ViewPhongTieuChuan", new { page }))
 
 <script src="~/Content/PhongList.js"></script>
 <script>
@@ -70,8 +89,17 @@
             var phongId = $(this).data('id');
             var giaPhong = $(this).data('price');
 
-            alert('Bạn đã đặt phòng: ' + phongId + '\nGiá: ' + giaPhong + ' VND');
-            window.location.href = $(this).attr('href');
+            @if (Session["ID"] == null)
+            {
+                @:if (confirm('Bạn cần đăng nhập để đặt phòng. Chuyển đến trang đăng nhập?')) {
+                @:    window.location.href = '@Url.Action("Index", "LoginUser")';
+                @:}
+                @:return false;
+            }
+            else
+            {
+                @:window.location.href = $(this).attr('href');
+            }
         });
     });
 </script>

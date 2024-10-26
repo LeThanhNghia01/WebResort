@@ -40,5 +40,6 @@ namespace DemoDB2.Models
         public virtual ICollection<LichLamViec> LichLamViec { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Luong> Luong1 { get; set; }
+        public string TenChucVu { get; internal set; }
     }
 }

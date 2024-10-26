@@ -75,7 +75,7 @@ namespace DemoDB2.Controllers
                     ViewBag.ErrorRegister = "Email không hợp lệ.";
                     return View(_user);
                 }
-                if(string.IsNullOrWhiteSpace(_user.SoDienThoai)||_user.SoDienThoai.Length != 10)
+                if (string.IsNullOrWhiteSpace(_user.SoDienThoai) || _user.SoDienThoai.Length != 10)
                 {
                     ViewBag.ErrorRegister = "Số điện thoại phải có 10 số";
                     return View(_user);
@@ -140,7 +140,7 @@ namespace DemoDB2.Controllers
                 return RedirectToAction("LoginNV", "LoginNhanVien");
             }
 
-            
+
             user.TenChucVu = user.ChucVu?.TenChucVu;
 
             var luongMoiNhat = database.Luong
@@ -309,7 +309,7 @@ namespace DemoDB2.Controllers
 
             var customers = database.NguoiDung.ToList();
             return View(customers);
-        
+
         }
     }
 }
