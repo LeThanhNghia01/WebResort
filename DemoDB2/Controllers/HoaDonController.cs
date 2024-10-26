@@ -10,7 +10,7 @@ using DemoDB2.Models;
 
 namespace DemoDB2.Controllers
 {
-    [CheckUserLogin]
+    //[CheckUserLogin]
     public class HoaDonController : Controller
     {
         private QLKSEntities db = new QLKSEntities();
@@ -48,24 +48,10 @@ namespace DemoDB2.Controllers
 
         public ActionResult IndexKH()
         {
-            // Lấy NguoiDungID từ Session
-            var nguoiDungID = Session["NguoiDungID"];
-
-            if (nguoiDungID == null)
-            {
-                // Nếu chưa đăng nhập, chuyển hướng về trang đăng nhập
-                return RedirectToAction("Login", "LoginUser");
-            }
-
-            // Convert nguoiDungID sang int
-            int userID = Convert.ToInt32(nguoiDungID);
-
-            // Lọc hóa đơn theo NguoiDungID
             var hoaDon = db.HoaDon
                 .Include(h => h.NguoiDung)
                 .Include(h => h.Phong)
-                .Include(h => h.Phong.LoaiPhong)
-                .Where(h => h.NguoiDungID == userID) // Thêm điều kiện lọc
+                .Include(h => h.Phong.LoaiPhong) // Thêm Include LoaiPhong
                 .AsNoTracking()
                 .ToList();
 
@@ -77,13 +63,10 @@ namespace DemoDB2.Controllers
                         .Include(p => p.LoaiPhong)
                         .FirstOrDefault(p => p.PhongID == hd.PhongID);
 
-                    if (phong != null)
+                    if (phong != null && hd.NgayTraPhong.HasValue && hd.NgayNhanPhong.HasValue)
                     {
-                        if (hd.NgayTraPhong.HasValue && hd.NgayNhanPhong.HasValue)
-                        {
-                            int soNgayO = (hd.NgayTraPhong.Value - hd.NgayNhanPhong.Value).Days;
-                            hd.TongTien = phong.Gia * soNgayO;
-                        }
+                        int soNgayO = (hd.NgayTraPhong.Value - hd.NgayNhanPhong.Value).Days;
+                        hd.TongTien = phong.Gia * soNgayO;
                     }
                 }
             }
