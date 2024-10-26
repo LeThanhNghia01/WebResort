@@ -20,6 +20,7 @@ namespace DemoDB2.Models
             this.NhanVien = new HashSet<NhanVien>();
         }
         public List<ChucVu> ListChucVu { get; internal set; }
+
         public int ChucVuID { get; set; }
         public string TenChucVu { get; set; }
         public string MoTaChucVu { get; set; }

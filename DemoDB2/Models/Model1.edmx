@@ -24,6 +24,8 @@
           <Property Name="NgayTraPhong" Type="date" />
           <Property Name="NguoiDungID" Type="int" />
           <Property Name="IDDichVuSuDung" Type="int" />
+          <Property Name="IDTinhTrang" Type="int" />
+          <Property Name="ImagePhong" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="DichVuSuDung">
           <Key>
@@ -174,6 +176,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__DatPhong__IDTinh__48CFD27E">
+          <End Role="TinhTrangPhong" Type="Self.TinhTrangPhong" Multiplicity="0..1" />
+          <End Role="DatPhong" Type="Self.DatPhong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TinhTrangPhong">
+              <PropertyRef Name="IDTinhTrang" />
+            </Principal>
+            <Dependent Role="DatPhong">
+              <PropertyRef Name="IDTinhTrang" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__DatPhong__NguoiD__46E78A0C">
           <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="0..1" />
           <End Role="DatPhong" Type="Self.DatPhong" Multiplicity="*" />
@@ -294,7 +308,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__LichLamVi__NhanV__5165187F">
+        <Association Name="FK__LichLamVi__NhanV__52593CB8">
           <End Role="NhanVien" Type="Self.NhanVien" Multiplicity="1" />
           <End Role="LichLamViec" Type="Self.LichLamViec" Multiplicity="*" />
           <ReferentialConstraint>
@@ -306,7 +320,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Luong__NhanVienI__4AB81AF0">
+        <Association Name="FK__Luong__NhanVienI__4BAC3F29">
           <End Role="NhanVien" Type="Self.NhanVien" Multiplicity="1" />
           <End Role="Luong" Type="Self.Luong" Multiplicity="*" />
           <ReferentialConstraint>
@@ -373,6 +387,10 @@
             <End Role="DichVuSuDung" EntitySet="DichVuSuDung" />
             <End Role="DatPhong" EntitySet="DatPhong" />
           </AssociationSet>
+          <AssociationSet Name="FK__DatPhong__IDTinh__48CFD27E" Association="Self.FK__DatPhong__IDTinh__48CFD27E">
+            <End Role="TinhTrangPhong" EntitySet="TinhTrangPhong" />
+            <End Role="DatPhong" EntitySet="DatPhong" />
+          </AssociationSet>
           <AssociationSet Name="FK__DatPhong__NguoiD__46E78A0C" Association="Self.FK__DatPhong__NguoiD__46E78A0C">
             <End Role="NguoiDung" EntitySet="NguoiDung" />
             <End Role="DatPhong" EntitySet="DatPhong" />
@@ -413,11 +431,11 @@
             <End Role="Phong" EntitySet="Phong" />
             <End Role="HoaDon" EntitySet="HoaDon" />
           </AssociationSet>
-          <AssociationSet Name="FK__LichLamVi__NhanV__5165187F" Association="Self.FK__LichLamVi__NhanV__5165187F">
+          <AssociationSet Name="FK__LichLamVi__NhanV__52593CB8" Association="Self.FK__LichLamVi__NhanV__52593CB8">
             <End Role="NhanVien" EntitySet="NhanVien" />
             <End Role="LichLamViec" EntitySet="LichLamViec" />
           </AssociationSet>
-          <AssociationSet Name="FK__Luong__NhanVienI__4AB81AF0" Association="Self.FK__Luong__NhanVienI__4AB81AF0">
+          <AssociationSet Name="FK__Luong__NhanVienI__4BAC3F29" Association="Self.FK__Luong__NhanVienI__4BAC3F29">
             <End Role="NhanVien" EntitySet="NhanVien" />
             <End Role="Luong" EntitySet="Luong" />
           </AssociationSet>
@@ -459,7 +477,10 @@
           <Property Name="NgayTraPhong" Type="DateTime" Precision="0" />
           <Property Name="NguoiDungID" Type="Int32" />
           <Property Name="IDDichVuSuDung" Type="Int32" />
+          <Property Name="IDTinhTrang" Type="Int32" />
+          <Property Name="ImagePhong" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="DichVuSuDung" Relationship="Self.FK__DatPhong__IDDich__45F365D3" FromRole="DatPhong" ToRole="DichVuSuDung" />
+          <NavigationProperty Name="TinhTrangPhong" Relationship="Self.FK__DatPhong__IDTinh__48CFD27E" FromRole="DatPhong" ToRole="TinhTrangPhong" />
           <NavigationProperty Name="NguoiDung" Relationship="Self.FK__DatPhong__NguoiD__46E78A0C" FromRole="DatPhong" ToRole="NguoiDung" />
           <NavigationProperty Name="Phong" Relationship="Self.FK__DatPhong__PhongI__47DBAE45" FromRole="DatPhong" ToRole="Phong" />
         </EntityType>
@@ -515,7 +536,7 @@
           <Property Name="CaChieu" Type="Boolean" Nullable="false" />
           <Property Name="CaToi" Type="Boolean" Nullable="false" />
           <Property Name="CaDem" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="NhanVien" Relationship="Self.FK__LichLamVi__NhanV__5165187F" FromRole="LichLamViec" ToRole="NhanVien" />
+          <NavigationProperty Name="NhanVien" Relationship="Self.FK__LichLamVi__NhanV__52593CB8" FromRole="LichLamViec" ToRole="NhanVien" />
         </EntityType>
         <EntityType Name="LoaiPhong">
           <Key>
@@ -535,7 +556,7 @@
           <Property Name="Nam" Type="Int32" Nullable="false" />
           <Property Name="LuongMotGio" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="TongLuong" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <NavigationProperty Name="NhanVien" Relationship="Self.FK__Luong__NhanVienI__4AB81AF0" FromRole="Luong" ToRole="NhanVien" />
+          <NavigationProperty Name="NhanVien" Relationship="Self.FK__Luong__NhanVienI__4BAC3F29" FromRole="Luong" ToRole="NhanVien" />
         </EntityType>
         <EntityType Name="MonAn">
           <Key>
@@ -578,8 +599,8 @@
           <Property Name="ImageNhanVien" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ChucVu" Relationship="Self.FK__NhanVien__ChucVu__37A5467C" FromRole="NhanVien" ToRole="ChucVu" />
           <NavigationProperty Name="DichVuSuDung" Relationship="Self.FK__DichVuSuD__NhanV__3E52440B" FromRole="NhanVien" ToRole="DichVuSuDung" />
-          <NavigationProperty Name="LichLamViec" Relationship="Self.FK__LichLamVi__NhanV__5165187F" FromRole="NhanVien" ToRole="LichLamViec" />
-          <NavigationProperty Name="Luong1" Relationship="Self.FK__Luong__NhanVienI__4AB81AF0" FromRole="NhanVien" ToRole="Luong" />
+          <NavigationProperty Name="LichLamViec" Relationship="Self.FK__LichLamVi__NhanV__52593CB8" FromRole="NhanVien" ToRole="LichLamViec" />
+          <NavigationProperty Name="Luong1" Relationship="Self.FK__Luong__NhanVienI__4BAC3F29" FromRole="NhanVien" ToRole="Luong" />
         </EntityType>
         <EntityType Name="Phong">
           <Key>
@@ -613,6 +634,7 @@
           </Key>
           <Property Name="IDTinhTrang" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TenTinhTrang" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="DatPhong" Relationship="Self.FK__DatPhong__IDTinh__48CFD27E" FromRole="TinhTrangPhong" ToRole="DatPhong" />
           <NavigationProperty Name="Phong" Relationship="Self.FK__Phong__IDTinhTra__300424B4" FromRole="TinhTrangPhong" ToRole="Phong" />
         </EntityType>
         <EntityType Name="Xe">
@@ -649,6 +671,18 @@
             </Principal>
             <Dependent Role="DatPhong">
               <PropertyRef Name="IDDichVuSuDung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DatPhong__IDTinh__48CFD27E">
+          <End Role="TinhTrangPhong" Type="Self.TinhTrangPhong" Multiplicity="0..1" />
+          <End Role="DatPhong" Type="Self.DatPhong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TinhTrangPhong">
+              <PropertyRef Name="IDTinhTrang" />
+            </Principal>
+            <Dependent Role="DatPhong">
+              <PropertyRef Name="IDTinhTrang" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -772,7 +806,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__LichLamVi__NhanV__5165187F">
+        <Association Name="FK__LichLamVi__NhanV__52593CB8">
           <End Role="NhanVien" Type="Self.NhanVien" Multiplicity="1" />
           <End Role="LichLamViec" Type="Self.LichLamViec" Multiplicity="*" />
           <ReferentialConstraint>
@@ -796,7 +830,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Luong__NhanVienI__4AB81AF0">
+        <Association Name="FK__Luong__NhanVienI__4BAC3F29">
           <End Role="NhanVien" Type="Self.NhanVien" Multiplicity="1" />
           <End Role="Luong" Type="Self.Luong" Multiplicity="*" />
           <ReferentialConstraint>
@@ -843,6 +877,10 @@
             <End Role="DichVuSuDung" EntitySet="DichVuSuDung" />
             <End Role="DatPhong" EntitySet="DatPhong" />
           </AssociationSet>
+          <AssociationSet Name="FK__DatPhong__IDTinh__48CFD27E" Association="Self.FK__DatPhong__IDTinh__48CFD27E">
+            <End Role="TinhTrangPhong" EntitySet="TinhTrangPhong" />
+            <End Role="DatPhong" EntitySet="DatPhong" />
+          </AssociationSet>
           <AssociationSet Name="FK__DatPhong__NguoiD__46E78A0C" Association="Self.FK__DatPhong__NguoiD__46E78A0C">
             <End Role="NguoiDung" EntitySet="NguoiDung" />
             <End Role="DatPhong" EntitySet="DatPhong" />
@@ -883,7 +921,7 @@
             <End Role="Phong" EntitySet="Phong" />
             <End Role="HoaDon" EntitySet="HoaDon" />
           </AssociationSet>
-          <AssociationSet Name="FK__LichLamVi__NhanV__5165187F" Association="Self.FK__LichLamVi__NhanV__5165187F">
+          <AssociationSet Name="FK__LichLamVi__NhanV__52593CB8" Association="Self.FK__LichLamVi__NhanV__52593CB8">
             <End Role="NhanVien" EntitySet="NhanVien" />
             <End Role="LichLamViec" EntitySet="LichLamViec" />
           </AssociationSet>
@@ -891,7 +929,7 @@
             <End Role="LoaiPhong" EntitySet="LoaiPhong" />
             <End Role="Phong" EntitySet="Phong" />
           </AssociationSet>
-          <AssociationSet Name="FK__Luong__NhanVienI__4AB81AF0" Association="Self.FK__Luong__NhanVienI__4AB81AF0">
+          <AssociationSet Name="FK__Luong__NhanVienI__4BAC3F29" Association="Self.FK__Luong__NhanVienI__4BAC3F29">
             <End Role="NhanVien" EntitySet="NhanVien" />
             <End Role="Luong" EntitySet="Luong" />
           </AssociationSet>
@@ -925,6 +963,8 @@
                 <ScalarProperty Name="NgayTraPhong" ColumnName="NgayTraPhong" />
                 <ScalarProperty Name="NguoiDungID" ColumnName="NguoiDungID" />
                 <ScalarProperty Name="IDDichVuSuDung" ColumnName="IDDichVuSuDung" />
+                <ScalarProperty Name="IDTinhTrang" ColumnName="IDTinhTrang" />
+                <ScalarProperty Name="ImagePhong" ColumnName="ImagePhong" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

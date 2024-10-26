@@ -11,7 +11,8 @@ namespace DemoDB2.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Web;
+
     public partial class NhanVien
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -31,7 +32,7 @@ namespace DemoDB2.Models
         public string Email { get; set; }
         public string MatKhau { get; set; }
         public string ImageNhanVien { get; set; }
-        public string TenChucVu { get; internal set; }
+        public HttpPostedFileBase UploadImage { get; set; }
         public virtual ChucVu ChucVu { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DichVuSuDung> DichVuSuDung { get; set; }
