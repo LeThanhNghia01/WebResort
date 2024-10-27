@@ -278,8 +278,6 @@ namespace DemoDB2.Controllers
                 var phong = database.Phong.Find(datPhong.PhongID);
                 if (phong != null)
                 {
-
-
                     // Tạo hóa đơn mới
                     var hoaDon = new HoaDon
                     {
@@ -294,6 +292,8 @@ namespace DemoDB2.Controllers
                     // Cập nhật trạng thái phòng thành "Chờ xác nhận" (ID = 2)
                     phong.IDTinhTrang = 2; // Giả sử ID 2 là trạng thái "Chờ xác nhận"
                     database.Entry(phong).State = EntityState.Modified;
+                    datPhong.ImagePhong = phong.ImagePhong; 
+                    datPhong.IDTinhTrang = phong.IDTinhTrang;
                 }
 
                 database.SaveChanges();
@@ -308,6 +308,20 @@ namespace DemoDB2.Controllers
                 {
                     return RedirectToAction("ViewPhongTieuChuan");
                 }
+            }
+
+            return View(datPhong);
+        }
+        public ActionResult ChiTietDatPhong(int id)
+        {
+            var datPhong = database.DatPhong
+                .Include(dp => dp.Phong)
+                .Include(dp => dp.TinhTrangPhong)
+                .FirstOrDefault(dp => dp.DatPhongID == id);
+
+            if (datPhong == null)
+            {
+                return HttpNotFound();
             }
 
             return View(datPhong);
