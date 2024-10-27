@@ -9,21 +9,6 @@
 <head>
     <link href="~/Content/PhongList.css" rel="stylesheet" />
 </head>
-@*<div class="filter-container">
-    <form method="get" action="@Url.Action("ViewPhongKH")" class="form-inline">
-        <label class="mr-2">Lọc theo tình trạng:</label>
-        <select name="TinhTrangID" class="form-control mr-2" onchange="this.form.submit()">
-            <option value="">Tất cả</option>
-            @foreach (var tinhTrang in ViewBag.IDTinhTrang)
-            {
-                <option value="@tinhTrang.IDTinhTrang"
-                        @(Request.QueryString["TinhTrangID"] == tinhTrang.IDTinhTrang.ToString() ? "selected" : "")>
-                    @tinhTrang.TenTinhTrang
-                </option>
-            }
-        </select>
-    </form>
-</div>*@
 <div class="room-list-container">
     <div class="header">
         <h2>Danh Sách Phòng</h2>

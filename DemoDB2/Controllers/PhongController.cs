@@ -135,12 +135,12 @@ namespace DemoDB2.Controllers
         }
         public ActionResult ViewPhongTieuChuan(int? page)
         {
-            return ViewPhongKH(page, 2); // Giả sử ID 1 là cho Phòng Tiêu Chuẩn
+            return ViewPhongKH(page, 2, null); // Giả sử ID 2 là cho Phòng Tiêu Chuẩn
         }
 
         public ActionResult ViewPhongVIP(int? page)
         {
-            return ViewPhongKH(page, 1); // Giả sử ID 2 là cho Phòng VIP
+            return ViewPhongKH(page, 1, null); // Giả sử ID 1 là cho Phòng VIP
         }
         public ActionResult ViewPhongKH(int? page, int? LoaiPhongID, int? TinhTrangID)
         {
@@ -162,6 +162,9 @@ namespace DemoDB2.Controllers
             {
                 phongs = phongs.Where(p => p.IDTinhTrang == TinhTrangID.Value);
             }
+
+            // Thêm điều kiện để không hiển thị các phòng có tình trạng "Chờ xác nhận" (ID = 2)
+            phongs = phongs.Where(p => p.IDTinhTrang != 2);
 
             var pagedPhongs = phongs.OrderBy(p => p.PhongID).ToPagedList(pageNumber, pageSize);
 
@@ -288,12 +291,23 @@ namespace DemoDB2.Controllers
                     };
 
                     database.HoaDon.Add(hoaDon);
+                    // Cập nhật trạng thái phòng thành "Chờ xác nhận" (ID = 2)
+                    phong.IDTinhTrang = 2; // Giả sử ID 2 là trạng thái "Chờ xác nhận"
+                    database.Entry(phong).State = EntityState.Modified;
                 }
 
                 database.SaveChanges();
 
                 TempData["SuccessMessage"] = "Đặt phòng thành công. Hóa đơn đã được tạo.";
-                return RedirectToAction("TrangChu","Home");
+                // Chuyển hướng về trang ViewPhongVIP hoặc ViewPhongTieuChuan
+                if (phong.IDLoai == 1) // Giả sử ID 1 là cho phòng VIP
+                {
+                    return RedirectToAction("ViewPhongVIP");
+                }
+                else if (phong.IDLoai == 2) // Giả sử ID 2 là cho phòng tiêu chuẩn
+                {
+                    return RedirectToAction("ViewPhongTieuChuan");
+                }
             }
 
             return View(datPhong);
