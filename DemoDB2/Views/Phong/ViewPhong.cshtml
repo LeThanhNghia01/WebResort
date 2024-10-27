@@ -73,7 +73,7 @@
                             <div class="btn-group">
                                 @Html.ActionLink("Sửa", "EditPhong", new { id = pro.PhongID }, new { @class = "btn btn-primary btn-sm" })
                                 @Html.ActionLink("Xóa", "DeletePhong", new { id = pro.PhongID }, new { @class = "btn btn-danger btn-sm" })
-                                @if (pro.IDTinhTrang == 5)
+                                @if (pro.IDTinhTrang == 2)
                                 {
                                     using (Html.BeginForm("ConfirmRoom", "Phong", FormMethod.Post, new { style = "display:inline" }))
                                     {

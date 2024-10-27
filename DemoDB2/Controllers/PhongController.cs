@@ -78,15 +78,15 @@ namespace DemoDB2.Controllers
                     return HttpNotFound();
                 }
 
-                // Đảm bảo trạng thái hiện tại là Chờ Xác Nhận (ID = 5)
-                if (phong.IDTinhTrang != 5)
+                // Đảm bảo trạng thái hiện tại là Chờ Xác Nhận (ID = 2)
+                if (phong.IDTinhTrang != 2)
                 {
                     TempData["Error"] = "Chỉ có thể xác nhận phòng đang ở trạng thái Chờ Xác Nhận";
                     return RedirectToAction("ViewPhong");
                 }
 
-                // Cập nhật trạng thái
-                phong.IDTinhTrang = 6;
+                // Cập nhật trạng thái : đã xác nhận ID : 3
+                phong.IDTinhTrang = 3;
                 database.Entry(phong).State = EntityState.Modified;
                 database.SaveChanges();
 
@@ -288,7 +288,7 @@ namespace DemoDB2.Controllers
                 database.SaveChanges();
 
                 TempData["SuccessMessage"] = "Đặt phòng thành công. Hóa đơn đã được tạo.";
-                return RedirectToAction("TrangChu");
+                return RedirectToAction("TrangChu","Home");
             }
 
             return View(datPhong);
