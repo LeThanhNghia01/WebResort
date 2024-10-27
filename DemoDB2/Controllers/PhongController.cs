@@ -142,29 +142,34 @@ namespace DemoDB2.Controllers
         {
             return ViewPhongKH(page, 1); // Giả sử ID 2 là cho Phòng VIP
         }
-        public ActionResult ViewPhongKH(int? page, int? LoaiPhongID)
+        public ActionResult ViewPhongKH(int? page, int? LoaiPhongID, int? TinhTrangID)
         {
             int pageSize = 6;
             int pageNumber = (page ?? 1);
 
-            var trangThaiTrong = database.TinhTrangPhong.FirstOrDefault(t => t.TenTinhTrang == "Trống");
-            if (trangThaiTrong == null)
-            {
-                return Content("Không tìm thấy trạng thái 'Trống' trong cơ sở dữ liệu.");
-            }
-
             var phongs = database.Phong
                 .Include(p => p.LoaiPhong)
-                .Include(p => p.TinhTrangPhong)
-                .Where(p => p.IDTinhTrang == trangThaiTrong.IDTinhTrang);
+                .Include(p => p.TinhTrangPhong);
 
+            // Lọc theo loại phòng nếu có
             if (LoaiPhongID.HasValue)
             {
                 phongs = phongs.Where(p => p.IDLoai == LoaiPhongID.Value);
             }
 
+            // Lọc theo tình trạng nếu có
+            if (TinhTrangID.HasValue)
+            {
+                phongs = phongs.Where(p => p.IDTinhTrang == TinhTrangID.Value);
+            }
+
             var pagedPhongs = phongs.OrderBy(p => p.PhongID).ToPagedList(pageNumber, pageSize);
 
+            // Thêm danh sách tình trạng vào ViewBag
+            ViewBag.DanhSachTinhTrang = database.TinhTrangPhong.ToList();
+            ViewBag.TinhTrangID = TinhTrangID; // Lưu lại tình trạng đã chọn
+
+            // Các ViewBag khác vẫn giữ nguyên
             ViewBag.LoaiPhongID = LoaiPhongID;
             ViewBag.LoaiPhongList = new SelectList(database.LoaiPhong, "IDLoai", "TenLoai");
 
