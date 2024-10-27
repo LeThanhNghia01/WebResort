@@ -53,7 +53,7 @@
         <a href="@Url.Action("IndexKH", "HoaDon")" class="btn btn-info">
             <i class="fas fa-file-invoice"></i> Hóa đơn
         </a>
-        <a href="@Url.Action("ViewDatPhong","DatPhong")" class="btn btn-booking">
+        <a href="@Url.Action("ChiTietDatPhong","Phong", new { id = Model.NguoiDungID })" class="btn btn-booking">
             <i class="fas fa-calendar-check"></i> Phiếu đặt phòng
         </a>
 

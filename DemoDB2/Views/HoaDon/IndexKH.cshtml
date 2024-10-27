@@ -34,8 +34,6 @@
                             {
                                 <tr>
                                     <td>@item.HoaDonID.ToString()</td>
-                                    @*<td>@(item.NguoiDung != null ? item.NguoiDung.TenNguoiDung : "N/A")</td>
-        <td>@(item.Phong != null ? $"{item.Phong.LoaiPhong} - {item.Phong.PhongID}" : "N/A")</td>*@
                                     <td>@(item.NguoiDung != null ? item.NguoiDung.TenNguoiDung : "N/A")</td>
                                     <td>
                                         @if (item.Phong != null && item.Phong.LoaiPhong != null)
@@ -53,7 +51,7 @@
                                     <td><span class="badge badge-@(item.TrangThaiThanhToan == "Đã thanh toán" ? "success" : "warning")">@item.TrangThaiThanhToan</span></td>
                                     <td>
                                         @Html.ActionLink("Chi tiết", "DetailsKH", new { id = item.HoaDonID }, new { @class = "btn btn-info btn-sm" })
-                                        @if (item.TrangThaiThanhToan != "Đã thanh toán")
+                                        @if (item.TrangThaiThanhToan != "Đã thanh toán" && item.Phong != null && item.Phong.IDTinhTrang == 3) // Kiểm tra trạng thái phòng
                                         {
                                             @Html.ActionLink("Thanh toán", "Payment", new { id = item.HoaDonID }, new { @class = "btn btn-success btn-sm ml-1" })
                                         }
@@ -66,19 +64,9 @@
             </div>
         </div>
     }
-        <div class="text-center mt-4">
-            <a href="@Url.Action("ViewPhongKH", "Phong")" class="btn btn-primary btn-lg btn-back">
-                <i class="fas fa-arrow-left mr-2"></i> Quay lại Danh sách Phòng
-            </a>
-        </div>
+    <div class="text-center mt-4">
+        <a href="@Url.Action("ViewPhongKH", "Phong")" class="btn btn-primary btn-lg btn-back">
+            <i class="fas fa-arrow-left mr-2"></i> Quay lại Danh sách Phòng
+        </a>
     </div>
-<style>
-    .btn-back {
-        transition: all 0.3s ease;
-    }
-
-        .btn-back:hover {
-            transform: translateX(-5px);
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-        }
-</style>
+</div>

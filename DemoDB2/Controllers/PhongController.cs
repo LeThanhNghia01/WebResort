@@ -72,6 +72,7 @@ namespace DemoDB2.Controllers
         {
             try
             {
+                // Tìm phòng theo ID
                 var phong = database.Phong.Find(id);
                 if (phong == null)
                 {
@@ -85,9 +86,19 @@ namespace DemoDB2.Controllers
                     return RedirectToAction("ViewPhong");
                 }
 
-                // Cập nhật trạng thái : đã xác nhận ID : 3
+                // Cập nhật trạng thái phòng thành "Đã xác nhận" (ID = 3)
                 phong.IDTinhTrang = 3;
                 database.Entry(phong).State = EntityState.Modified;
+
+                // Cập nhật trạng thái trong bảng DatPhong
+                var datPhongList = database.DatPhong.Where(dp => dp.PhongID == id).ToList();
+                foreach (var datPhong in datPhongList)
+                {
+                    datPhong.IDTinhTrang = 3; // Cập nhật trạng thái của DatPhong thành "Đã xác nhận"
+                    database.Entry(datPhong).State = EntityState.Modified;
+                }
+
+                // Lưu thay đổi vào cơ sở dữ liệu
                 database.SaveChanges();
 
                 // Thông báo thành công
@@ -312,19 +323,28 @@ namespace DemoDB2.Controllers
 
             return View(datPhong);
         }
-        public ActionResult ChiTietDatPhong(int id)
+        public ActionResult ChiTietDatPhong(int? id)
         {
-            var datPhong = database.DatPhong
-                .Include(dp => dp.Phong)
-                .Include(dp => dp.TinhTrangPhong)
-                .FirstOrDefault(dp => dp.DatPhongID == id);
-
-            if (datPhong == null)
+            if (id == null)
             {
-                return HttpNotFound();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            return View(datPhong);
+            // Lấy danh sách đặt phòng của người dùng
+            var datPhongList = database.DatPhong
+                .Include(dp => dp.Phong)
+                .Include(dp => dp.TinhTrangPhong)
+                .Where(dp => dp.NguoiDungID == id)
+                .OrderByDescending(dp => dp.NgayDatPhong)
+                .ToList();
+
+            if (datPhongList == null || !datPhongList.Any())
+            {
+                TempData["Message"] = "Không có phiếu đặt phòng nào.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(datPhongList);
         }
         public ActionResult DeletePhong(int? id)
         {
