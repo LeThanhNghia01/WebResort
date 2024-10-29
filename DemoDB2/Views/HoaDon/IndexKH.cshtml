@@ -48,10 +48,14 @@
                                     <td>@(item.NgayNhanPhong.HasValue ? item.NgayNhanPhong.Value.ToString("dd/MM/yyyy") : "N/A")</td>
                                     <td>@(item.NgayTraPhong.HasValue ? item.NgayTraPhong.Value.ToString("dd/MM/yyyy") : "N/A")</td>
                                     <td>@(item.TongTien.HasValue ? string.Format("{0:N0} VNĐ", item.TongTien.Value) : "N/A")</td>
-                                    <td><span class="badge badge-@(item.TrangThaiThanhToan == "Đã thanh toán" ? "success" : "warning")">@item.TrangThaiThanhToan</span></td>
+                                    <td>
+                                        <span class="badge badge-@(item.TrangThaiThanhToan == "Đã thanh toán" ? "success" : "warning")">
+                                            @item.TrangThaiThanhToan
+                                        </span>
+                                    </td>
                                     <td>
                                         @Html.ActionLink("Chi tiết", "DetailsKH", new { id = item.HoaDonID }, new { @class = "btn btn-info btn-sm" })
-                                        @if (item.TrangThaiThanhToan != "Đã thanh toán" && item.Phong != null && item.Phong.IDTinhTrang == 3) // Kiểm tra trạng thái phòng
+                                        @if (item.TrangThaiThanhToan != "Đã thanh toán" && item.Phong != null && item.Phong.IDTinhTrang == 3)
                                         {
                                             @Html.ActionLink("Thanh toán", "Payment", new { id = item.HoaDonID }, new { @class = "btn btn-success btn-sm ml-1" })
                                         }
@@ -65,8 +69,8 @@
         </div>
     }
     <div class="text-center mt-4">
-        <a href="@Url.Action("ViewPhongKH", "Phong")" class="btn btn-primary btn-lg btn-back">
-            <i class="fas fa-arrow-left mr-2"></i> Quay lại Danh sách Phòng
+        <a href="@Url.Action("Profile", "LoginUser")" class="btn btn-primary btn-lg btn-back">
+            <i class="fas fa-arrow-left mr-2"></i> Quay lại hồ sơ
         </a>
     </div>
 </div>
